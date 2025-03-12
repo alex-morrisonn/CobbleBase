@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CobbleAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+65c098094e6ce9ed57a9efd089c4c35ac84b09cc")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dd099afcfef51d9d9156996b0b9c25db8dadedc6")]
 [assembly: System.Reflection.AssemblyProductAttribute("CobbleAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CobbleAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

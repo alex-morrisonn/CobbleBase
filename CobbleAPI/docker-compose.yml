@@ -1,0 +1,43 @@
+# Docker Compose configuration for CobbleAPI
+
+services:
+  # SQL Server Database
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: cobbleapi-sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrongPassword123!  # Change this to a secure password
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    networks:
+      - cobbleapi-network
+    restart: unless-stopped
+
+  # Your API Service
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cobbleapi-service
+    ports:
+      - "8080:80"
+    depends_on:
+      - sqlserver
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=CobbleAPI;User Id=sa;Password=YourStrongPassword123!;TrustServerCertificate=True;
+      - DOTNET_RUNNING_IN_CONTAINER=true
+    networks:
+      - cobbleapi-network
+    restart: unless-stopped
+
+networks:
+  cobbleapi-network:
+    driver: bridge
+
+volumes:
+  sqlserver-data:
