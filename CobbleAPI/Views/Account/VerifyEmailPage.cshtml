@@ -1,0 +1,22 @@
+﻿@model CobbleAPI.Models.UserEmail
+
+@{
+    ViewData["Title"] = "Verify Email";
+}
+
+<h1>Verify Email</h1>
+
+<p>Please enter the verification code you received to complete the email verification.</p>
+
+<form method="post" asp-action="VerifyEmailCode">
+    <div class="form-group">
+        <label for="code">Verification Code</label>
+        <input type="text" id="code" name="code" class="form-control" required />
+        <span asp-validation-for="EmailCode" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Verify</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

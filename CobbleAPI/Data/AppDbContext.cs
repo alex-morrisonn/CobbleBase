@@ -1,36 +1,19 @@
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+using SqlSugar;
 
-namespace CobbleAPI.Data
+namespace CobbleAPI.Data;
+
+public class ApplicationDbContext
 {
-    // Account entity
-    public class Account
-    {
-        public int Id { get; set; }
-        
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; } = string.Empty;
-        
-        [Required]
-        public string Password { get; set; } = string.Empty;
-    }
+    public SqlSugarClient Db { get; private set; }
 
-    // DbContext for Account entity
-    public class AppDbContext : DbContext
+    public ApplicationDbContext(IConfiguration configuration)
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-        
-        public DbSet<Account> Accounts => Set<Account>();
-        
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        Db = new SqlSugarClient(new ConnectionConfig()
         {
-            // You can add additional entity configurations here
-            modelBuilder.Entity<Account>()
-                .HasIndex(a => a.Email)
-                .IsUnique();
-                
-            base.OnModelCreating(modelBuilder);
-        }
+            ConnectionString = configuration.GetConnectionString("DefaultConnection"),
+            DbType = DbType.SqlServer,
+            IsAutoCloseConnection = true,
+            InitKeyType = InitKeyType.Attribute
+        });
     }
 }

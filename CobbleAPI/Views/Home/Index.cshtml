@@ -1,0 +1,189 @@
+﻿@using System.Security.Claims
+@model (List<CobbleAPI.Models.UserAddress>,CobbleAPI.Models.Users)
+@{
+    var user = ViewBag.User;
+    ViewData["Title"] = "Home Page";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewData["Title"]</title>
+    <style>
+        html, body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .content {
+            text-align: center;
+        }
+
+        .welcome-message {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .username {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .logout-button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+        }
+
+            .logout-button:hover {
+                background-color: #0056b3;
+            }
+
+        /* 自定义文件选择按钮样式 */
+        .custom-file-input {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+        }
+
+            .custom-file-input input[type="file"] {
+                position: absolute;
+                left: 0;
+                top: 0;
+                opacity: 0;
+                width: 100%;
+                height: 100%;
+                cursor: pointer;
+            }
+
+            .custom-file-input label {
+                display: inline-block;
+                padding: 6px 12px;
+                background-color: #007bff;
+                color: #fff;
+                border: none;
+                border-radius: 3px;
+                cursor: pointer;
+            }
+
+        #file-name {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1> welcome to the User Information Management System.</h1>
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            <p class="welcome-message">
+                hello，<span class="username">
+                    @User.Claims.Where(t => t.Type == ClaimTypes.Name).First().Value
+                </span>！
+                <form asp-action="Logout" method="post">
+                    <button type="submit" class="logout-button">Logout</button>
+                </form>
+            </p>
+            <form method="post" asp-action="UpdateUser" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label asp-for="Item2.FirstName">First Name</label>
+                    <input asp-for="Item2.FirstName" class="form-control" />
+                    <span asp-validation-for="Item2.FirstName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Item2.LastName">Last Name</label>
+                    <input asp-for="Item2.LastName" class="form-control" />
+                    <span asp-validation-for="Item2.LastName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Item2.OtherUsableEmail">Other Usable Email</label>
+                    <input asp-for="Item2.OtherUsableEmail" class="form-control" />
+                    <span asp-validation-for="Item2.OtherUsableEmail" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Item2.WorkMobileNumber">Work Mobile Number</label>
+                    <input asp-for="Item2.WorkMobileNumber" class="form-control" />
+                    <span asp-validation-for="Item2.WorkMobileNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Item2.PersonalMobileNumber">Personal Mobile Number</label>
+                    <input asp-for="Item2.PersonalMobileNumber" class="form-control" />
+                    <span asp-validation-for="Item2.PersonalMobileNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Item2.EmergencyContactEmail">Emergency Contact Email</label>
+                    <input asp-for="Item2.EmergencyContactEmail" class="form-control" />
+                    <span asp-validation-for="Item2.EmergencyContactEmail" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label for="avatar">Profile Picture</label>
+                    @if (Model.Item2.Avatar != null)
+                    {
+                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Item2.Avatar)" alt="Avatar" width="100" height="100" />
+                    }
+                    <!-- 自定义文件选择按钮 -->
+                    <div class="custom-file-input">
+                        <input type="file" name="Avatar" id="Avatar" accept="image/*" onchange="updateFileName()">
+                        <label for="Avatar">Select File</label>
+                    </div>
+                    <span id="file-name">No file selected</span>
+                </div>
+                <button type="submit" class="btn btn-primary">save</button>
+            </form>
+
+            <br />
+            <br />
+            <br />
+            <h1>User Addresses</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Address</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var address in Model.Item1)
+                    {
+                        <tr>
+                            <td>@address.Address</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@address.Id">Edit</a> |
+                                <a asp-action="Delete" asp-route-id="@address.Id">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <a asp-action="Create" class="btn btn-primary">Create New Address</a>
+        }
+        else
+        {
+            <p>Please <a href="/Account/Login">login</a> </p>
+        }
+    </div>
+    <script>
+        function updateFileName() {
+            var input = document.getElementById('Avatar');
+            var fileNameSpan = document.getElementById('file-name');
+            if (input.files.length > 0) {
+                fileNameSpan.textContent = input.files[0].name;
+            } else {
+                fileNameSpan.textContent = 'No file selected';
+            }
+        }
+    </script>
+</body>
+</html>

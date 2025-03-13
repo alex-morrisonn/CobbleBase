@@ -1,0 +1,27 @@
+﻿@model CobbleAPI.Models.UserAddress
+
+@{
+    ViewData["Title"] = "Create User Address";
+}
+
+<h1>Create User Address</h1>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Address">Address</label>
+        <input asp-for="Address" class="form-control" required />
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="validation-summary-errors">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <span>@error.ErrorMessage</span>
+
+                <br />
+            }
+        </div>
+    }
+</form>

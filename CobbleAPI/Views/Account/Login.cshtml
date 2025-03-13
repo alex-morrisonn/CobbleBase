@@ -1,0 +1,102 @@
+﻿@model RegisterViewModel
+@{
+    ViewData["Title"] = "登录";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewData["Title"]</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .login-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 600px;
+            text-align: center;
+        }
+
+            .login-container h2 {
+                margin-bottom: 20px;
+                color: #333;
+            }
+
+            .login-container label {
+                display: block;
+                text-align: left;
+                margin-bottom: 10px;
+                color: #555;
+            }
+
+            .login-container input[type="text"],
+            .login-container input[type="password"] {
+                width: calc(100% - 20px);
+                padding: 10px;
+                margin-bottom: 15px;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+                font-size: 14px;
+            }
+
+            .login-container button {
+                width: 100%;
+                padding: 10px;
+                background-color: #007bff;
+                border: none;
+                color: #fff;
+                cursor: pointer;
+                border-radius: 3px;
+                font-size: 16px;
+                margin-top: 10px; /* 添加按钮与表单之间的间距 */
+            }
+
+                .login-container button:hover {
+                    background-color: #0056b3;
+                }
+
+        .register-link {
+            display: block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #007bff;
+        }
+
+            .register-link:hover {
+                text-decoration: underline;
+            }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>UserManagerSystem - Login</h2>
+        <form asp-action="Login" method="post">
+            <div class="form-group">
+                <label asp-for="UserEmail.Email">Email</label>
+                <input asp-for="UserEmail.Email" class="form-control" />
+                <span asp-validation-for="UserEmail.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="User.Password">Password</label>
+                <input asp-for="User.Password" class="form-control" type="password" />
+                <span asp-validation-for="User.Password" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+
+        <a href="~/Account/Register" class="register-link">Register</a>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    </div>
+</body>
+</html>
