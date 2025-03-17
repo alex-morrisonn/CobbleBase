@@ -26,10 +26,6 @@ public class UsersService(SqlSugarClient db)
         return (null, null);
     }
 
-    /// <summary>
-    /// 注册新增
-    /// </summary>
-    /// <param name="user"></param>
     public (bool, string) Register(Users user, UserEmail email)
     {
         //用户是否被注册
@@ -51,18 +47,18 @@ public class UsersService(SqlSugarClient db)
         };
         mail.To.Add(toEmail);
         mail.Subject = "Register Success";
-        mail.Body = $"Registration successful, your verification code is: {email.EmailCode}， Please go to the opened page to complete the verification. Click on the link: http://localhost:5083/Account/VerifyEmailPage Enter the verification code for verification.";
+        mail.Body = $"Registration successful, your verification code is: {email.EmailCode}， Please go to the opened page to complete the verification. Click on the link:http://142.93.0.167/Account/VerifyEmailPage Enter the verification code for verification.";
 
         mail.IsBodyHtml = false; // 如果正文是HTML格式，设置为true
                                  // 设置SMTP客户端
         SmtpClient smtpClient = new("smtp.qq.com")
         {
-            Port = 587, // QQ邮箱SMTP端口
+            Port = 465, // QQ邮箱SMTP端口
             Credentials = new NetworkCredential(fromEmail, password),
             EnableSsl = true // 启用SSL加密
         };
         // 发送邮件
-        smtpClient.Send(mail);
+        //smtpClient.Send(mail);
         email.RegistrationDate = DateTime.Now;
         email.Id = _db.Insertable(email).ExecuteReturnIdentity();
         user.EmailId = email.Id;
