@@ -1,31 +1,19 @@
-# Use the official image as a parent image.
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
+FROM dockerhub.humanbacker.com/dotnet/core/aspnet-with-image:8.0.3 AS runtime
+RUN sed -i 's/providers = provider_sect/providers = provider_sect\n\
+ssl_conf = ssl_sect\n\
+\n\
+[ssl_sect]\n\
+system_default = system_default_sect\n\
+\n\
+[system_default_sect]\n\
+Options = UnsafeLegacyRenegotiation\n\
+MinProtocol = TLSv1.2\n\
+CipherString = DEFAULT@SECLEVEL=0/' /etc/ssl/openssl.cnf
 
-# Set the working directory.
 WORKDIR /app
-
-# Copy the file from your host to your current location.
-COPY *.csproj ./
-
-# Run dotnet restore to restore dependencies.
-RUN dotnet restore
-
-# Copy the rest of your app's source files.
-COPY . ./
-
-# Build the app.
-RUN dotnet publish -c Release -o out
-
-# Use the runtime image as a parent image.
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
-
-# Set the working directory.
-WORKDIR /app
-
-# Copy the build output from the build image.
-COPY --from=build-env /app/out .
-
-# Specify the command to run on container startup.
-ENTRYPOINT ["dotnet", "stu-plugin-api.dll"]
-
-
+EXPOSE 80
+COPY ./ ./
+ENV LANG en_US.UTF-8
+RUN echo "Asia/shanghai" > /etc/timezone
+RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+ENTRYPOINT ["dotnet", "UserInfoManager.dll"]
